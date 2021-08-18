@@ -6,6 +6,7 @@ Rails.application.routes.draw do
         collection do
           get 'daily_report'
           get 'weekly_report'
+          get 'report'
         end
       end
     end
