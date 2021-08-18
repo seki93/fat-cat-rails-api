@@ -24,12 +24,8 @@ class Api::V1::TimeTracksController < ApplicationController
     end
   end
 
-  def daily_report
-    render json: ReportRepresenter.new(params[:user_id], 'daily').report
-  end
-
-  def weekly_report
-    render json: ReportRepresenter.new(params[:user_id], 'weekly').report
+  def report
+    render json: ReportRepresenter.new(params[:user_id], params[:report_type]).report
   end
 
   private

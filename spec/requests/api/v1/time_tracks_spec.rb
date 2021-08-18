@@ -24,7 +24,7 @@ RSpec.describe "Api::V1::TimeTracks", type: :request do
     end
   end
 
-  describe 'GET /time_tracks/daily_report' do
+  describe 'GET /time_tracks/report' do
 
     before do
       travel_to Time.local(2021, 8, 18, 17, 17)
@@ -37,7 +37,7 @@ RSpec.describe "Api::V1::TimeTracks", type: :request do
       FactoryBot.create(:user, id: 1, username: 'John', password: 'password')
       FactoryBot.create(:time_track, id: 1, start_time: '2021-08-18 15:15:15', end_time: '2021-08-18 16:15:15', user_id: 1)
 
-      get '/api/v1/time_tracks/daily_report', params: { user_id: 1 }
+      get '/api/v1/time_tracks/report', params: { user_id: 1, report_type: 'daily' }
 
       expect(JSON.parse(response.body)).to eq(
                                                [
@@ -56,7 +56,7 @@ RSpec.describe "Api::V1::TimeTracks", type: :request do
       FactoryBot.create(:time_track, id: 1, start_time: '2021-08-17 15:15:15', end_time: '2021-08-17 16:15:15', user_id: 1)
       FactoryBot.create(:time_track, id: 2, start_time: '2021-08-16 15:15:15', end_time: '2021-08-16 16:15:15', user_id: 1)
 
-      get '/api/v1/time_tracks/weekly_report', params: { user_id: 1 }
+      get '/api/v1/time_tracks/report', params: { user_id: 1, report_type: 'weekly'}
 
       expect(JSON.parse(response.body).size).to eq(2)
     end
