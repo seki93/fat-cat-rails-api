@@ -16,8 +16,8 @@ class ReportRepresenter
     TimeTrack.where(user_id: user_id, start_time: REPORT_TYPE[type]).map do |report|
       {
           id: report.id,
-          start_time: report.start_time,
-          end_time: report.end_time,
+          start_time: report.start_time.to_s,
+          end_time: report.end_time.to_s,
           total: (report.end_time - report.start_time) / 60
       }
     end
