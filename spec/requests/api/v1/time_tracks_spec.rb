@@ -8,7 +8,11 @@ RSpec.describe "Api::V1::TimeTracks", type: :request do
         post '/api/v1/time_tracks', params:
             { time_track:
                   { start_time: '2021-08-18 15:15:15', end_time: nil, user_id: 1 }
-            }
+            },
+             headers:
+                 {
+                     "Authorization" => "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMSJ9.M1vu6qDej7HzuSxcfbE6KAMekNUXB3EWtxwS0pg4UGg"
+                 }
       }.to change { TimeTrack.count }.from(0).to(1)
     end
   end
@@ -18,7 +22,7 @@ RSpec.describe "Api::V1::TimeTracks", type: :request do
       FactoryBot.create(:user, id: 1, username: 'John', password: 'password')
       FactoryBot.create(:time_track, id: 1, start_time: '2021-08-18 15:15:15', end_time: nil, user_id: 1)
 
-      put '/api/v1/time_tracks', params: { time_track: { end_time: '2021-08-18 16:15:15', user_id: 1 }, id: 1 }
+      put '/api/v1/time_tracks', params: { time_track: { end_time: '2021-08-18 16:15:15', user_id: 1 }, id: 1 }, headers: { "Authorization" => "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiMSJ9.M1vu6qDej7HzuSxcfbE6KAMekNUXB3EWtxwS0pg4UGg" }
 
       expect(TimeTrack.find(1).end_time).to eq('2021-08-18 16:15:15'.to_datetime)
     end
@@ -33,11 +37,14 @@ RSpec.describe "Api::V1::TimeTracks", type: :request do
     after do
       travel_back
     end
+
+    let!(:user) { FactoryBot.create(:user, id: 1, username: 'John', password: 'password') }
+    let!(:token) { AuthenticationTokenService.incode(user.id) }
+
     it 'get daily time_tracks' do
-      FactoryBot.create(:user, id: 1, username: 'John', password: 'password')
       FactoryBot.create(:time_track, id: 1, start_time: '2021-08-18 15:15:15', end_time: '2021-08-18 16:15:15', user_id: 1)
 
-      get '/api/v1/time_tracks/report', params: { user_id: 1, report_type: 'daily' }
+      get '/api/v1/time_tracks/report', params: { user_id: 1, report_type: 'daily' }, headers: { "Authorization" => "Bearer #{token}" }
 
       expect(JSON.parse(response.body)).to eq(
                                                [
@@ -48,15 +55,14 @@ RSpec.describe "Api::V1::TimeTracks", type: :request do
                                                        "total" => 60.0
                                                    }
                                                ]
-                                           )
+                                            )
     end
 
     it 'get weekly time_tracks' do
-      FactoryBot.create(:user, id: 1, username: 'John', password: 'password')
       FactoryBot.create(:time_track, id: 1, start_time: '2021-08-17 15:15:15', end_time: '2021-08-17 16:15:15', user_id: 1)
       FactoryBot.create(:time_track, id: 2, start_time: '2021-08-16 15:15:15', end_time: '2021-08-16 16:15:15', user_id: 1)
 
-      get '/api/v1/time_tracks/report', params: { user_id: 1, report_type: 'weekly'}
+      get '/api/v1/time_tracks/report', params: { user_id: 1, report_type: 'weekly'}, headers: { "Authorization" => "Bearer #{token}" }
 
       expect(JSON.parse(response.body).size).to eq(2)
     end

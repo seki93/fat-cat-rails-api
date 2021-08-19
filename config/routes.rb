@@ -7,6 +7,7 @@ Rails.application.routes.draw do
           get 'report'
         end
       end
+      post 'authenticate', to: 'authentication#create'
     end
   end
 end

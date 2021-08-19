@@ -1,5 +1,9 @@
 class Api::V1::TimeTracksController < ApplicationController
 
+  include ActionController::HttpAuthentication::Token
+
+  before_action :authenticate_user
+
   def show
     time_track = TimeTrack.find(params[:id])
     render json: time_track
@@ -32,6 +36,17 @@ class Api::V1::TimeTracksController < ApplicationController
 
   def time_track_params
     params.require(:time_track).permit(:user_id, :start_time, :end_time)
+  end
+
+  def authenticate_user
+    token, _options = token_and_options(request)
+
+    user_id = AuthenticationTokenService.decode(token)
+    User.find(user_id)
+  rescue ActiveRecord::RecordNotFound
+    render status: :unauthorized
+  rescue JWT::DecodeError
+    render json: { error: 'Invalid token' }, status: :bad_request
   end
 
 end
