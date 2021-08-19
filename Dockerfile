@@ -10,6 +10,6 @@ RUN bundle install
 # We copy all the files from our current application to the /app container
 COPY . .
 # We expose the port
-EXPOSE 3000
+EXPOSE 3001
 # Start the main process.
 CMD ["rails", "server", "-b", "0.0.0.0"]
