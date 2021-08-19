@@ -1,24 +1,10 @@
 # README
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+So this is my first time sharing a project with someone, I hope that I included everything.
 
-Things you may want to cover:
+Some stuff I would do differently (definitely rename TimeTrack model).
+Also, I added HMAC_SECRET which should not be present in Git/Project, that should be in ENV or Rails secret.
 
-* Ruby version
+To start the server use the command: docker-compose up --build
+I changed PORT to 3001 because React part use 3000.
 
-* System dependencies
-
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
